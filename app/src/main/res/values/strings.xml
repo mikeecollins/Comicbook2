@@ -1,0 +1,11 @@
+<resources>
+        <string name="app_name">Comicbook</string>
+        <string name="button_addComicbook">Add Comicbook</string>
+        <string name="hint_comicbookTitle">Ttile of Comic</string>
+        <string name="hint_comicbookAuthor">Author</string>
+        <string name="hint_comicbookChapter">Chapter</string>
+        <string name="menu_addComicbook">Add</string>
+        <string name="menu_cancelComicbook">Cancel</string>
+
+
+</resources>
