@@ -1,6 +1,7 @@
 package ie.setu.assignment2.activites
 
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log.i
@@ -52,6 +53,12 @@ class ComicbookActivity : AppCompatActivity() {
             binding.comicbookAuthor.setText(comicbook.author)
             binding.comicbookChapter.setText(comicbook.chapter)
             binding.btnAdd.setText(R.string.save_comicbook)
+            Picasso.get()
+                .load(comicbook.image)
+                .into(binding.comicbookImage)
+            if (comicbook.image != Uri.EMPTY) {
+                binding.chooseImage.setText(R.string.change_comicbook_image)
+            }
         }
 
 
@@ -76,9 +83,6 @@ class ComicbookActivity : AppCompatActivity() {
 
         }
 
-        binding.chooseImage.setOnClickListener {
-            i("info", "Select image")
-        }
 
         binding.chooseImage.setOnClickListener {
             showImagePicker(imageIntentLauncher)
@@ -112,7 +116,8 @@ class ComicbookActivity : AppCompatActivity() {
                             comicbook.image = result.data!!.data!!
                             Picasso.get()
                                 .load(comicbook.image)
-                                .into(binding.placemarkImage)
+                                .into(binding.comicbookImage)
+                            binding.chooseImage.setText(R.string.change_comicbook_image)
                         } // end of if
                     }
                     RESULT_CANCELED -> { } else -> { }
