@@ -6,6 +6,11 @@
         <string name="hint_comicbookChapter">Chapter</string>
         <string name="menu_addComicbook">Add</string>
         <string name="menu_cancelComicbook">Cancel</string>
+        <string name="enter_comicbook_title"> Please enter a Comicbook Title </string>
+        <string name="save_comicbook"> Save Comicbook </string>
+        <string name="button_addImage"> Add Image </string>
+
+
 
 
 </resources>

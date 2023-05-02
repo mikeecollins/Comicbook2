@@ -31,7 +31,7 @@ internal fun getId(): Long {
             }
         }
 
-        fun logAll() {
+      private fun logAll() {
             comicbooks.forEach { i("${it}") }
         }
 

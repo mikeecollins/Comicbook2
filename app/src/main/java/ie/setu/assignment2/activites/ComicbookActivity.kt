@@ -22,6 +22,9 @@ class ComicbookActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        var edit = false
+
+
         binding = ActivityComicbookBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.toolbarAdd.title = title
@@ -29,30 +32,47 @@ class ComicbookActivity : AppCompatActivity() {
 
         app = application as MainApp
 
-        if (intent.hasExtra("placemark_edit")) {
-            comicbook = intent.extras?.getParcelable("placemark_edit")!!
+        i("info", "Comicbook Activity started...")
+
+
+
+
+        if (intent.hasExtra("comicbook_edit")) {
+            edit = true
+            comicbook = intent.extras?.getParcelable("comicbook_edit")!!
             binding.comicbookTitle.setText(comicbook.title)
             binding.comicbookAuthor.setText(comicbook.author)
             binding.comicbookChapter.setText(comicbook.chapter)
+            binding.btnAdd.setText(R.string.save_comicbook)
         }
 
-        i("info","Placemark Activity started...")
+
 
         binding.btnAdd.setOnClickListener() {
             comicbook.title = binding.comicbookTitle.text.toString()
             comicbook.author = binding.comicbookAuthor.text.toString()
             comicbook.chapter = binding.comicbookChapter.text.toString()
-            if (comicbook.title.isNotEmpty()) {
-               //app.comicbooks.add(comicbook.copy())
-                app.comicbooks.create(comicbook.copy())
-                setResult(RESULT_OK)
-                finish()
-            } else {
-                Snackbar.make(it, "Please Enter a title", Snackbar.LENGTH_LONG)
+            if (comicbook.title.isEmpty()) {
+                Snackbar.make(it, R.string.enter_comicbook_title, Snackbar.LENGTH_LONG)
                     .show()
+            } else {
+                if (edit) {
+                    app.comicbooks.update(comicbook.copy())
+                } else {
+                    app.comicbooks.create((comicbook.copy()))
+                }
             }
+            i("info", "Add Button Pressed: $comicbook")
+            setResult(RESULT_OK)
+            finish()
+
+        }
+
+        binding.chooseImage.setOnClickListener {
+            i("info", "Select image")
         }
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_comicbook, menu)
