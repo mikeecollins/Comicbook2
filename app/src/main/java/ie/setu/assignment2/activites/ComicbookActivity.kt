@@ -1,16 +1,22 @@
 package ie.setu.assignment2.activites
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log.i
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.material.snackbar.Snackbar
+import com.squareup.picasso.Picasso
 import ie.setu.assignment2.R
 import ie.setu.assignment2.databinding.ActivityComicbookBinding
+import ie.setu.assignment2.helpers.showImagePicker
 import ie.setu.assignment2.main.MainApp
 import ie.setu.assignment2.models.ComicbookModel
+
 import timber.log.Timber
 
 class ComicbookActivity : AppCompatActivity() {
@@ -18,6 +24,8 @@ class ComicbookActivity : AppCompatActivity() {
     private lateinit var binding: ActivityComicbookBinding
     var comicbook = ComicbookModel()
     lateinit var app: MainApp
+    private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,6 +79,13 @@ class ComicbookActivity : AppCompatActivity() {
         binding.chooseImage.setOnClickListener {
             i("info", "Select image")
         }
+
+        binding.chooseImage.setOnClickListener {
+            showImagePicker(imageIntentLauncher)
+        }
+
+        registerImagePickerCallback()
+
     }
 
 
@@ -84,5 +99,24 @@ class ComicbookActivity : AppCompatActivity() {
             R.id.item_cancel -> { finish() }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun registerImagePickerCallback() {
+        imageIntentLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+            { result ->
+                when(result.resultCode){
+                    RESULT_OK -> {
+                        if (result.data != null) {
+                            i("info","Got Result ${result.data!!.data}")
+                            comicbook.image = result.data!!.data!!
+                            Picasso.get()
+                                .load(comicbook.image)
+                                .into(binding.placemarkImage)
+                        } // end of if
+                    }
+                    RESULT_CANCELED -> { } else -> { }
+                }
+            }
     }
 }
