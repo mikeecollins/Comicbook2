@@ -22,7 +22,7 @@ class ComicbookAdapter constructor(private var comicbooks: List<ComicbookModel>,
 
     override fun onBindViewHolder(holder: MainHolder, position: Int) {
         val comicbook = comicbooks[holder.adapterPosition]
-        holder.bind(comicbook)
+        holder.bind(comicbook, listener)
     }
 
     override fun getItemCount(): Int = comicbooks.size
@@ -30,10 +30,12 @@ class ComicbookAdapter constructor(private var comicbooks: List<ComicbookModel>,
     class MainHolder(private val binding : CardComicbookBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(comicbook: ComicbookModel) {
+        fun bind(comicbook: ComicbookModel, listener:ComicbookListener) {
             binding.comicbookTitle.text = comicbook.title
             binding.comicbookAuthor.text = comicbook.author
             binding.comicbookChapter.text = comicbook.chapter
+            binding.root.setOnClickListener{listener.onComicbookClick(comicbook)}
+
         }
     }
 }

@@ -35,7 +35,6 @@ class ComicbookListActivity : AppCompatActivity(), ComicbookListener {
 
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
-        //binding.recyclerView.adapter = ComicbookAdapter(app.comicbooks)
         binding.recyclerView.adapter = ComicbookAdapter(app.comicbooks.findAll(), this)
 
 
