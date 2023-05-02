@@ -3,6 +3,7 @@ package ie.setu.assignment2.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 import ie.setu.assignment2.databinding.CardComicbookBinding
 import ie.setu.assignment2.models.ComicbookModel
 
@@ -35,6 +36,8 @@ class ComicbookAdapter constructor(private var comicbooks: List<ComicbookModel>,
             binding.comicbookAuthor.text = comicbook.author
             binding.comicbookChapter.text = comicbook.chapter
             binding.root.setOnClickListener{listener.onComicbookClick(comicbook)}
+            Picasso.get().load(comicbook.image).resize(200,200).into(binding.imageIcon)
+            binding.root.setOnClickListener { listener.onComicbookClick(comicbook) }
 
         }
     }

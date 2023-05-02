@@ -27,6 +27,7 @@ internal fun getId(): Long {
                 foundComicbook.title = comicbook.title
                 foundComicbook.author = comicbook.author
                 foundComicbook.chapter = comicbook.chapter
+                foundComicbook.image = comicbook.image
                 logAll()
             }
         }
