@@ -17,6 +17,7 @@ import ie.setu.assignment2.databinding.ActivityComicbookBinding
 import ie.setu.assignment2.helpers.showImagePicker
 import ie.setu.assignment2.main.MainApp
 import ie.setu.assignment2.models.ComicbookModel
+import ie.setu.assignment2.models.Location
 
 import timber.log.Timber
 
@@ -25,7 +26,9 @@ class ComicbookActivity : AppCompatActivity() {
     private lateinit var binding: ActivityComicbookBinding
     var comicbook = ComicbookModel()
     lateinit var app: MainApp
-    private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
+    private lateinit var imageIntentLauncher: ActivityResultLauncher<Intent>
+    private lateinit var mapIntentLauncher: ActivityResultLauncher<Intent>
+    var location = Location(52.245696, -7.139102, 15f)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,12 +85,22 @@ class ComicbookActivity : AppCompatActivity() {
             finish()
 
         }
-
+        binding.comicbookLocation.setOnClickListener {
+            i("info", "Set Location Pressed")
+        }
 
         binding.chooseImage.setOnClickListener {
             showImagePicker(imageIntentLauncher)
         }
 
+        binding.comicbookLocation.setOnClickListener {
+
+            val launcherIntent = Intent(this, MapActivity::class.java)
+                .putExtra("location", location)
+            mapIntentLauncher.launch(launcherIntent)
+        }
+
+        registerMapCallback()
         registerImagePickerCallback()
 
     }
@@ -100,19 +113,22 @@ class ComicbookActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.item_cancel -> { finish() }
+            R.id.item_cancel -> {
+                finish()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
+
 
     private fun registerImagePickerCallback() {
         imageIntentLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult())
             { result ->
-                when(result.resultCode){
+                when (result.resultCode) {
                     RESULT_OK -> {
                         if (result.data != null) {
-                            i("info","Got Result ${result.data!!.data}")
+                            i("info", "Got Result ${result.data!!.data}")
                             comicbook.image = result.data!!.data!!
                             Picasso.get()
                                 .load(comicbook.image)
@@ -120,7 +136,26 @@ class ComicbookActivity : AppCompatActivity() {
                             binding.chooseImage.setText(R.string.change_comicbook_image)
                         } // end of if
                     }
-                    RESULT_CANCELED -> { } else -> { }
+                    RESULT_CANCELED -> {}
+                    else -> {}
+                }
+            }
+    }
+
+    private fun registerMapCallback() {
+        mapIntentLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+            { result ->
+                when (result.resultCode) {
+                    RESULT_OK -> {
+                        if (result.data != null) {
+                            i("info", "Got Location ${result.data.toString()}")
+                            location = result.data!!.extras?.getParcelable("location")!!
+                            i("info", "Location == $location")
+                        } // end of if
+                    }
+                    RESULT_CANCELED -> {}
+                    else -> {}
                 }
             }
     }
