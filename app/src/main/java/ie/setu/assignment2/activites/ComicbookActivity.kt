@@ -28,7 +28,7 @@ class ComicbookActivity : AppCompatActivity() {
     lateinit var app: MainApp
     private lateinit var imageIntentLauncher: ActivityResultLauncher<Intent>
     private lateinit var mapIntentLauncher: ActivityResultLauncher<Intent>
-    var location = Location(52.245696, -7.139102, 15f)
+    // var location = Location(52.245696, -7.139102, 15f)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,12 +89,15 @@ class ComicbookActivity : AppCompatActivity() {
             i("info", "Set Location Pressed")
         }
 
-        binding.chooseImage.setOnClickListener {
-            showImagePicker(imageIntentLauncher)
-        }
 
         binding.comicbookLocation.setOnClickListener {
+            val location = Location(52.245696, -7.139102, 15f)
 
+            if (comicbook.zoom != 0f) {
+                location.lat = comicbook.lat
+                location.lng = comicbook.lng
+                location.zoom = comicbook.zoom
+            }
             val launcherIntent = Intent(this, MapActivity::class.java)
                 .putExtra("location", location)
             mapIntentLauncher.launch(launcherIntent)
@@ -102,6 +105,11 @@ class ComicbookActivity : AppCompatActivity() {
 
         registerMapCallback()
         registerImagePickerCallback()
+
+        binding.chooseImage.setOnClickListener {
+            showImagePicker(imageIntentLauncher, this)
+        }
+
 
     }
 
@@ -143,15 +151,25 @@ class ComicbookActivity : AppCompatActivity() {
     }
 
     private fun registerMapCallback() {
-        mapIntentLauncher =
+        imageIntentLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult())
             { result ->
                 when (result.resultCode) {
                     RESULT_OK -> {
                         if (result.data != null) {
-                            i("info", "Got Location ${result.data.toString()}")
-                            location = result.data!!.extras?.getParcelable("location")!!
-                            i("info", "Location == $location")
+                            i("info", "Got Result ${result.data!!.data}")
+
+                            val image = result.data!!.data!!
+                            contentResolver.takePersistableUriPermission(
+                                image,
+                                Intent.FLAG_GRANT_READ_URI_PERMISSION
+                            )
+                            comicbook.image = image
+
+                            Picasso.get()
+                                .load(comicbook.image)
+                                .into(binding.comicbookImage)
+                            binding.chooseImage.setText(R.string.change_comicbook_image)
                         } // end of if
                     }
                     RESULT_CANCELED -> {}
