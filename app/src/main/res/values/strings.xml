@@ -13,6 +13,10 @@
         <string name="change_comicbook_image">Change comicbook image</string>
         <string name="button_location">Pick your Location</string>
     <string name="title_activity_map">MapActivity</string>
+    <string name= "register_comicbook">Register</string>
+       <string name="comicbook_password">Enter Password</string>
+        <string name="comicbook_username">Enter Username</string>
+        <string name="login_comicbook">Login</string>
 
 
 
