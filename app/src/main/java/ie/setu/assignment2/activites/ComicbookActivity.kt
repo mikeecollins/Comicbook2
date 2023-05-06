@@ -98,6 +98,8 @@ class ComicbookActivity : AppCompatActivity() {
                 location.lng = comicbook.lng
                 location.zoom = comicbook.zoom
             }
+
+
             val launcherIntent = Intent(this, MapActivity::class.java)
                 .putExtra("location", location)
             mapIntentLauncher.launch(launcherIntent)
@@ -150,31 +152,24 @@ class ComicbookActivity : AppCompatActivity() {
             }
     }
 
-    private fun registerMapCallback() {
-        imageIntentLauncher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult())
-            { result ->
-                when (result.resultCode) {
-                    RESULT_OK -> {
-                        if (result.data != null) {
-                            i("info", "Got Result ${result.data!!.data}")
 
-                            val image = result.data!!.data!!
-                            contentResolver.takePersistableUriPermission(
-                                image,
-                                Intent.FLAG_GRANT_READ_URI_PERMISSION
-                            )
-                            comicbook.image = image
-
-                            Picasso.get()
-                                .load(comicbook.image)
-                                .into(binding.comicbookImage)
-                            binding.chooseImage.setText(R.string.change_comicbook_image)
-                        } // end of if
+        private fun registerMapCallback() {
+            mapIntentLauncher =
+                registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+                { result ->
+                    when (result.resultCode) {
+                        RESULT_OK -> {
+                            if (result.data != null) {
+                                Timber.i("Got Location ${result.data.toString()}")
+                                val location = result.data!!.extras?.getParcelable<Location>("location")!!
+                                Timber.i("Location == $location")
+                                comicbook.lat = location.lat
+                                comicbook.lng = location.lng
+                                comicbook.zoom = location.zoom
+                            } // end of if
+                        }
+                        RESULT_CANCELED -> { } else -> { }
                     }
-                    RESULT_CANCELED -> {}
-                    else -> {}
                 }
-            }
+        }
     }
-}

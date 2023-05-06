@@ -46,7 +46,7 @@ class LoginActivity: AppCompatActivity() {
             var foundUser = app.users.findUser(comicbookusername,comicbookpassword)
             if (foundUser!=null) {
 
-                val intent = Intent(this, ComicbookActivity::class.java)
+                val intent = Intent(this, ComicbookListActivity::class.java)
                 startActivity(intent)
                 finish()
             } else {
